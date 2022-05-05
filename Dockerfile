@@ -5,8 +5,8 @@ FROM alpine:3.13.5 as dl
 WORKDIR /app
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN \
-  echo "**** Fake Page  ****"
-COPY ./html/index.php ./index.php
+  echo "**** Fake Pages  ****"
+COPY ./html/* .
 
 FROM php as php-ext-mysqli
 RUN docker-php-ext-install -j"$(nproc)" mysqli

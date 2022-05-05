@@ -81,7 +81,7 @@ COPY ./config/app.conf  /etc/apache2/conf.d/app.conf
 RUN \
   echo "**** install packages ****" && \
   apk add --no-cache \
-    mysql-client=10.4.18-r0 \
+    mysql-client=10.4.24-r0 \
     freetype=2.10.4-r0 \
     libpng=1.6.37-r1 \
     libjpeg-turbo=2.1.0-r0 \

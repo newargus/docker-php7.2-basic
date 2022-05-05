@@ -1,0 +1,10 @@
+.vagrant*
+bin
+.bin
+docker/docker
+.*.swp
+.idea
+.DS_Store
+.git/
+*.tar.gz
+*.zip

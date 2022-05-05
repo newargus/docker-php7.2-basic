@@ -2,15 +2,11 @@
 FROM php:7.2-fpm-alpine as php
 
 FROM alpine:3.13.5 as dl
-ARG VERSION
-ARG CHECKSUM
 WORKDIR /app
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN \
-  echo "**** install packages ****" && \
-  apk add --no-cache \
-    curl=7.76.1-r0 && \
-  echo "**** download OpenSource Code  ****"
+  echo "**** Fake Page  ****"
+COPY ./html/index.php ./index.php
 
 FROM php as php-ext-mysqli
 RUN docker-php-ext-install -j"$(nproc)" mysqli

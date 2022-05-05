@@ -79,6 +79,19 @@ COPY ./config/custom.ini /usr/local/etc/php/conf.d/custom.ini
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./config/app.conf  /etc/apache2/conf.d/app.conf
 RUN \
+  echo "**** Add Local to alpine dist ****"
+ENV MUSL_LOCALE_DEPS cmake make musl-dev gcc gettext-dev libintl 
+ENV MUSL_LOCPATH /usr/share/i18n/locales/musl
+
+RUN apk add --no-cache \
+    $MUSL_LOCALE_DEPS \
+    && wget https://gitlab.com/rilian-la-te/musl-locales/-/archive/master/musl-locales-master.zip \
+    && unzip musl-locales-master.zip \
+      && cd musl-locales-master \
+      && cmake -DLOCALE_PROFILE=OFF -D CMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install \
+      && cd .. && rm -r musl-locales-master
+
+RUN \
   echo "**** install packages ****" && \
   apk add --no-cache \
     mysql-client=10.4.24-r0 \

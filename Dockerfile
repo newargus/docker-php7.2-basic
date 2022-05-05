@@ -97,15 +97,21 @@ RUN \
     apache2=2.4.46-r1 \
     apache2-ctl=2.4.46-r1 \
     apache2-proxy=2.4.46-r1 \
-    tzdata=2021a-r0 && \
+    tzdata=2021a-r0
+    
+RUN \   
   echo "**** cleanup ****" && \
   rm -rf /tmp/* && \
   chown www-data -R . && \
-  chmod +x /entrypoint.sh && \
+  chmod +x /entrypoint.sh
+
+RUN \   
   echo "**** configure supervisord ****" && \
   sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/httpd.conf && \
   sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /etc/apache2/httpd.conf && \
-  sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf && \
+  sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf
+  
+RUN \    
   mkdir -p "/sessions" && \
   chown www-data:www-data /sessions && \
   chmod 0777 /sessions

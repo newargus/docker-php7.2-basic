@@ -94,10 +94,10 @@ RUN \
     pngquant=2.12.6-r0 \
     gifsicle=1.92-r0 \
     supervisor=4.2.0-r0 \
-    apache2=2.4.46-r1 \
-    apache2-ctl=2.4.46-r1 \
-    apache2-proxy=2.4.46-r1 \
-    tzdata=2021a-r0
+    apache2=2.4.53-r0 \
+    apache2-ctl=2.4.53-r0 \
+    apache2-proxy=2.4.53-r0 \
+    tzdata=2022a-r0
     
 RUN \   
   echo "**** cleanup ****" && \
@@ -110,7 +110,7 @@ RUN \
   sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/httpd.conf && \
   sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /etc/apache2/httpd.conf && \
   sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf
-  
+
 RUN \    
   mkdir -p "/sessions" && \
   chown www-data:www-data /sessions && \

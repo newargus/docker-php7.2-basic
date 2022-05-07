@@ -79,14 +79,14 @@ RUN pecl install xdebug && \
   docker-php-ext-enable xdebug 
 
 # Install igbinary
-RUN pecl install igbinary-$IGBINARY_VERSION \
+RUN pecl install igbinary \
     && rm -rf /tmp/pear \
     && docker-php-ext-enable igbinary
 
 # Install redis driver
 RUN mkdir -p /tmp/pear \
     && cd /tmp/pear \
-    && pecl bundle redis-$REDIS_VERSION \
+    && pecl bundle redis \
     && cd redis \
     && phpize . \
     && ./configure --enable-redis-igbinary \

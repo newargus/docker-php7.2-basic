@@ -66,14 +66,35 @@ RUN \
   docker-php-ext-install -j"$(nproc)" zip
 
 
-#FROM php as php-ext-redis
-#RUN \
-#  echo "**** install packages ****" && \
-#  apk add --no-cache \
-#    libzip-dev && \
-#  pecl install redis && \
-#	 docker-php-ext-enable redis
+FROM php as php-ext-redis
+RUN \
+  echo "**** install packages ****" && \
+  apk add --no-cache --update --virtual .build-deps \
+    libzip-dev \
+    .build-deps autoconf gcc cmake g++ make
 
+# Install XDebug
+RUN pecl install xdebug && \
+  rm -rf /tmp/pear && \
+  docker-php-ext-enable xdebug 
+
+# Install igbinary
+RUN pecl install igbinary-$IGBINARY_VERSION \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable igbinary
+
+# Install redis driver
+RUN mkdir -p /tmp/pear \
+    && cd /tmp/pear \
+    && pecl bundle redis-$REDIS_VERSION \
+    && cd redis \
+    && phpize . \
+    && ./configure --enable-redis-igbinary \
+    && make \
+    && make install \
+    && cd ~ \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
 
 FROM php as php-ext-gettext
 RUN \
@@ -131,8 +152,8 @@ COPY --from=php-ext-zip /usr/local/lib/php/extensions/ /usr/local/lib/php/extens
 COPY --from=php-ext-snmp /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-snmp /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
-# COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
-# COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
 COPY --from=php-ext-gettext /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-gettext /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
@@ -179,7 +200,10 @@ RUN \
     apache2=2.4.53-r0 \
     apache2-ctl=2.4.53-r0 \
     apache2-proxy=2.4.53-r0 \
-    tzdata=2022a-r0
+    tzdata=2022a-r0 \
+    libzip-dev \
+    net-snmp-dev \
+    openldap-dev
     
 RUN \   
   echo "**** cleanup ****" && \

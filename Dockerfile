@@ -14,6 +14,13 @@ RUN docker-php-ext-install -j"$(nproc)" mysqli
 FROM php as php-ext-pdo_mysql
 RUN docker-php-ext-install -j"$(nproc)" pdo_mysql
 
+# FROM php as php-ext-pdo_pgsql 
+# RUN \
+#  echo "**** install packages ****" && \
+#  apk add --no-cache \
+#    postgresql-dev && \
+#  docker-php-ext-install -j"$(nproc)" pdo_pgsql 
+
 FROM php as php-ext-exif
 RUN docker-php-ext-install -j"$(nproc)" exif
 
@@ -42,7 +49,12 @@ FROM php as php-ext-mbstring
 RUN docker-php-ext-install -j"$(nproc)" mbstring
 
 FROM php as php-ext-snmp
-RUN docker-php-ext-install -j"$(nproc)" snmp
+RUN \
+  echo "**** install packages ****" && \
+  apk add --no-cache \
+    net-snmp \
+    net-snmp-dev && \
+  docker-php-ext-install -j"$(nproc)" snmp
 
 FROM php as php-ext-zip
 RUN \
@@ -79,10 +91,7 @@ FROM php as php-ext-ldap
 RUN \
   echo "**** install packages ****" && \
   apk add --no-cache \
-    ldb-dev \
-    libldap \
     openldap-dev && \
-  docker-php-ext-configure ldap --prefix=/usr/local/php --with-ldap=/usr/lib/i386-linux-gnu && \
   docker-php-ext-install -j"$(nproc)"  ldap 
 
 FROM php

@@ -41,6 +41,9 @@ RUN \
 FROM php as php-ext-mbstring
 RUN docker-php-ext-install -j"$(nproc)" mbstring
 
+FROM php as php-ext-snmp
+RUN docker-php-ext-install -j"$(nproc)" snmp
+
 FROM php as php-ext-zip
 RUN \
   echo "**** install packages ****" && \
@@ -71,6 +74,16 @@ RUN \
   docker-php-ext-configure gettext && \
   docker-php-ext-install -j"$(nproc)"  intl \
     gettext
+
+FROM php as php-ext-ldap
+RUN \
+  echo "**** install packages ****" && \
+  apk add --no-cache \
+    ldb-dev \
+    libldap \
+    openldap-dev && \
+  docker-php-ext-configure ldap --prefix=/usr/local/php --with-ldap=/usr/lib/i386-linux-gnu && \
+  docker-php-ext-install -j"$(nproc)"  ldap 
 
 FROM php
 ARG VERSION
@@ -106,11 +119,17 @@ COPY --from=php-ext-gd /usr/local/lib/php/extensions/ /usr/local/lib/php/extensi
 COPY --from=php-ext-zip /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-zip /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
+COPY --from=php-ext-snmp /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-snmp /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+
 # COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 # COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
 COPY --from=php-ext-gettext /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-gettext /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+
+COPY --from=php-ext-ldap /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-ldap /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
 WORKDIR /var/www/html
 COPY --from=dl /app .

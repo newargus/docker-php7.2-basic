@@ -15,6 +15,52 @@ A self-made image for testing prupose, to learn CI github process inspired from:
 * [x] `arm64`
 * [x] `amd64`
 
+
+## PHP Modules enaabled
+
+[PHP Modules]  # Result of shell command : php -m
+bcmath
+Core
+ctype
+curl
+date
+dom
+exif
+fileinfo
+filter
+ftp
+gd
+gettext
+hash
+iconv
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcntl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+sodium
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zip
+zlib
+
 ## Dependencies
 
 * mysql (optional)

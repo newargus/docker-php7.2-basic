@@ -51,9 +51,25 @@ RUN \
   docker-php-ext-install -j"$(nproc)" zip
 
 
-FROM php as php-ext-redis
-RUN pecl install redis-5.3.7 && \
-	docker-php-ext-enable redis
+#FROM php as php-ext-redis
+#RUN \
+#  echo "**** install packages ****" && \
+#  apk add --no-cache \
+#    libzip-dev && \
+#  pecl install redis && \
+#	 docker-php-ext-enable redis
+
+
+FROM php as php-ext-gettext
+RUN \
+  echo "**** install packages ****" && \
+  icu-dev \
+    gettext \
+    gettext-dev && \
+  docker-php-ext-configure intl && \
+  docker-php-ext-configure gettext && \
+  docker-php-ext-install -j"$(nproc)"  intl \
+    gettext
 
 FROM php
 ARG VERSION
@@ -89,8 +105,11 @@ COPY --from=php-ext-gd /usr/local/lib/php/extensions/ /usr/local/lib/php/extensi
 COPY --from=php-ext-zip /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-zip /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
-COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
-COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+# COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+# COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+
+COPY --from=php-ext-gettext /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-gettext /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
 WORKDIR /var/www/html
 COPY --from=dl /app .

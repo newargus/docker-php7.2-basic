@@ -42,7 +42,13 @@ FROM php as php-ext-mbstring
 RUN docker-php-ext-install -j"$(nproc)" mbstring
 
 FROM php as php-ext-zip
-RUN docker-php-ext-install -j"$(nproc)" zip
+RUN \
+  echo "**** install packages ****" && \
+  apk add --no-cache \
+    libzip-dev \
+    zip  && \
+  docker-php-ext-configure zip --with-libzip && \
+  docker-php-ext-install -j"$(nproc)" zip
 
 FROM php
 ARG VERSION

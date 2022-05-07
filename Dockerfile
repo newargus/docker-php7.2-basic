@@ -178,7 +178,8 @@ RUN apk add --no-cache \
     && unzip musl-locales-master.zip \
       && cd musl-locales-master \
       && cmake -DLOCALE_PROFILE=OFF -D CMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install \
-      && cd .. && rm -r musl-locales-master
+      && cd .. && rm -r musl-locales-master \
+      && rm musl-locales-master.zip
 
 RUN \
   echo "**** install packages ****" && \
@@ -218,10 +219,10 @@ RUN \
   sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf
 
 RUN \    
-  mkdir -p "/sessions" && \
-  chown www-data:www-data /sessions && \
-  chmod 0777 /sessions
+  mkdir -p "/data" && \
+  chown www-data:www-data /data && \
+  chmod 0777 /data
 
-VOLUME [ "/sessions" ]
+VOLUME [ "/data" ]
 ENTRYPOINT ["/entrypoint.sh"]
 EXPOSE 80 9000

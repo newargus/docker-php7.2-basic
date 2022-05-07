@@ -50,6 +50,11 @@ RUN \
   docker-php-ext-configure zip --with-libzip && \
   docker-php-ext-install -j"$(nproc)" zip
 
+
+FROM php as php-ext-redis
+RUN pecl install redis-5.3.7 && \
+	docker-php-ext-enable redis
+
 FROM php
 ARG VERSION
 LABEL build_version="Version:- ${VERSION}"
@@ -83,6 +88,9 @@ COPY --from=php-ext-gd /usr/local/lib/php/extensions/ /usr/local/lib/php/extensi
 
 COPY --from=php-ext-zip /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-zip /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+
+COPY --from=php-ext-redis /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-redis /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
 WORKDIR /var/www/html
 COPY --from=dl /app .

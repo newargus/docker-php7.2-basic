@@ -219,7 +219,7 @@ RUN \
   sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf
 
 RUN \    
-  mkdir -p "/data" && \
+  mkdir -p "/data" && mkdir -p "/data/sessions" \
   chown www-data:www-data /data && \
   chmod 0777 /data
 

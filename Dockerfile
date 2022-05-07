@@ -41,10 +41,13 @@ RUN \
 FROM php as php-ext-mbstring
 RUN docker-php-ext-install -j"$(nproc)" mbstring
 
+FROM php as php-ext-zip
+RUN docker-php-ext-install -j"$(nproc)" zip
+
 FROM php
 ARG VERSION
 LABEL build_version="Version:- ${VERSION}"
-LABEL maintainer="nicholaswilde"
+LABEL maintainer="newargus"
 ARG TZ
 ENV TZ $(TZ)
 
@@ -72,6 +75,9 @@ COPY --from=php-ext-bcmath /usr/local/lib/php/extensions/ /usr/local/lib/php/ext
 COPY --from=php-ext-gd /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=php-ext-gd /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
+COPY --from=php-ext-zip /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=php-ext-zip /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+
 WORKDIR /var/www/html
 COPY --from=dl /app .
 COPY ./entrypoint.sh /entrypoint.sh
@@ -94,11 +100,12 @@ RUN apk add --no-cache \
 RUN \
   echo "**** install packages ****" && \
   apk add --no-cache \
-    mysql-client=10.4.24-r0 \
-    freetype=2.10.4-r0 \
+    graphviz \
+    mariadb-client \
+    freetype=2.10.4-r1 \
     libpng=1.6.37-r1 \
     libjpeg-turbo=2.1.0-r0 \
-    freetype-dev=2.10.4-r0 \
+    freetype-dev=2.10.4-r1 \
     libpng-dev=1.6.37-r1 \
     libjpeg-turbo-dev=2.1.0-r0 \
     icu-libs=67.1-r0 \

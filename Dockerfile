@@ -63,7 +63,8 @@ RUN \
 FROM php as php-ext-gettext
 RUN \
   echo "**** install packages ****" && \
-  icu-dev \
+  apk add --no-cache \
+    icu-dev \
     gettext \
     gettext-dev && \
   docker-php-ext-configure intl && \

@@ -185,6 +185,9 @@ RUN apk add --no-cache \
 RUN \
   echo "**** install packages ****" && \
   apk add --no-cache \
+    shadow \
+    nano \
+    git \
     graphviz \
     mariadb-client \
     freetype=2.10.4-r1 \

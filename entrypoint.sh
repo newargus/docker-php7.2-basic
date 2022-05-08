@@ -13,8 +13,8 @@ else
 		fi
 
 		if [ -d "$APP_DIR/$D" ] ; then
-			mv "$APP_DIR/$D/*" /data/$D
-			rm -rf "$APP_DIR/$D"
+			cp -r $D/ /data/
+			rm -rf $D
 			ln -s /data/$D .
 		fi
 

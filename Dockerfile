@@ -1,13 +1,14 @@
 # Base image version
 FROM php:7.2-fpm-alpine as php
 
+# build stage - Web Site
 FROM alpine:3.13.5 as dl
 WORKDIR /app
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-RUN \
-  echo "**** Fake Pages  ****"
-COPY ./html/ .
+ARG VERSION_HTMLTEMPLATE
+RUN apk add git && \
+  git clone --depth 1 --branch $VERSION_HTMLTEMPLATE https://github.com/newargus/php-testsite.git .
 
+# build stage - PHP Modules
 FROM php as php-ext-mysqli
 RUN docker-php-ext-install -j"$(nproc)" mysqli
 

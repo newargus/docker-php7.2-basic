@@ -18,10 +18,14 @@ else
 			ln -s /data/$D .
 		fi
 
-		chown www-data:www-data /data/$D
+		chown -R www-data:www-data /data/$D
 	done
     touch "$CONFIG"
     echo "Creating configuration file!"
 fi
+
+chown -R www-data:www-data /data
+chown -R www-data:www-data $APP_DIR
+chmod 777 -R /data
 
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

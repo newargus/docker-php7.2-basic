@@ -6,7 +6,7 @@ WORKDIR /app
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN \
   echo "**** Fake Pages  ****"
-COPY ./html/* .
+COPY ./html/ .
 
 FROM php as php-ext-mysqli
 RUN docker-php-ext-install -j"$(nproc)" mysqli
@@ -219,7 +219,7 @@ RUN \
   sed -i '$iLoadModule proxy_module modules/mod_proxy.so' /etc/apache2/httpd.conf
 
 RUN \    
-  mkdir -p "/data" && mkdir -p "/data/sessions" \
+  mkdir -p "/data" && mkdir -p "/data/sessions"  && \
   chown www-data:www-data /data && \
   chmod 0777 /data
 

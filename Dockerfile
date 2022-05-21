@@ -190,10 +190,10 @@ RUN \
     git \
     graphviz \
     mariadb-client \
-    freetype=2.10.4-r1 \
+    freetype=2.10.4-r2 \
     libpng=1.6.37-r1 \
     libjpeg-turbo=2.1.0-r0 \
-    freetype-dev=2.10.4-r1 \
+    freetype-dev=2.10.4-r2 \
     libpng-dev=1.6.37-r1 \
     libjpeg-turbo-dev=2.1.0-r0 \
     icu-libs=67.1-r0 \
